@@ -56,8 +56,6 @@ RUN if [ "${TARGETARCH}" = "arm64" ]; then \
 
 COPY rootfs/ /
 
-VOLUME ["/mnt"]
-
 ENTRYPOINT ["/init"]
 
 # Use this docker Options in run
