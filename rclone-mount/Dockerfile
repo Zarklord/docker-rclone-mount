@@ -41,7 +41,7 @@ RUN if [ "${TARGETARCH}" = "arm64" ]; then \
     else \
         OVERLAY_ARCH="${TARGETARCH}"; \
     fi \
-    apk --no-cache upgrade \
+    && apk --no-cache upgrade \
     && apk add --no-cache --update ca-certificates fuse3 fuse fuse-dev curl gnupg \
     && echo "Installing S6 Overlay" \
     && curl -o /tmp/s6-overlay.tar.gz -L \
