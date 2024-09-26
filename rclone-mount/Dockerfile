@@ -37,9 +37,9 @@ ENV DEBUG="false" \
 COPY --from=builder /go/src/github.com/rclone/rclone/rclone/rclone /usr/local/sbin/
 
 RUN if [ "${TARGETARCH}" = "arm64" ]; then \
-        export OVERLAY_ARCH="aarch64"; \
+        OVERLAY_ARCH="aarch64"; \
     else \
-        export OVERLAY_ARCH="${TARGETARCH}"; \
+        OVERLAY_ARCH="${TARGETARCH}"; \
     fi \
     apk --no-cache upgrade \
     && apk add --no-cache --update ca-certificates fuse3 fuse fuse-dev curl gnupg \
