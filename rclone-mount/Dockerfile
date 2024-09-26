@@ -25,12 +25,6 @@ ARG OVERLAY_VERSION
 ARG OVERLAY_KEY
 ARG TARGETARCH
 
-RUN if [ "${TARGETARCH}" = "arm64" ]; then \
-        OVERLAY_ARCH="aarch64"; \
-    else \
-        OVERLAY_ARCH="${TARGETARCH}"; \
-    fi
-
 ENV DEBUG="false" \
     AccessFolder="/mnt" \
     RemotePath="mediaefs:" \
@@ -42,7 +36,12 @@ ENV DEBUG="false" \
 
 COPY --from=builder /go/src/github.com/rclone/rclone/rclone/rclone /usr/local/sbin/
 
-RUN apk --no-cache upgrade \
+RUN if [ "${TARGETARCH}" = "arm64" ]; then \
+        export OVERLAY_ARCH="aarch64"; \
+    else \
+        export OVERLAY_ARCH="${TARGETARCH}"; \
+    fi \
+    apk --no-cache upgrade \
     && apk add --no-cache --update ca-certificates fuse3 fuse fuse-dev curl gnupg \
     && echo "Installing S6 Overlay" \
     && curl -o /tmp/s6-overlay.tar.gz -L \
