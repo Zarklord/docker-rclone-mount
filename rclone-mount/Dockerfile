@@ -18,13 +18,18 @@ RUN apk add --no-cache --update ca-certificates go git \
     && git checkout tags/${IMAGE_VERSION} \
     && go build
 
-
 # Image
 FROM alpine:latest
 
 ARG OVERLAY_VERSION
 ARG OVERLAY_KEY
 ARG TARGETARCH
+
+RUN if [ "${TARGETARCH}" = "arm64" ]; then \
+        OVERLAY_ARCH="aarch64" \
+    else \
+        OVERLAY_ARCH="${TARGETARCH}"
+    fi
 
 ENV DEBUG="false" \
     AccessFolder="/mnt" \
@@ -41,9 +46,9 @@ RUN apk --no-cache upgrade \
     && apk add --no-cache --update ca-certificates fuse3 fuse fuse-dev curl gnupg \
     && echo "Installing S6 Overlay" \
     && curl -o /tmp/s6-overlay.tar.gz -L \
-    "https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${TARGETARCH}.tar.gz" \
+    "https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}.tar.gz" \
     && curl -o /tmp/s6-overlay.tar.gz.sig -L \
-    "https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${TARGETARCH}.tar.gz.sig" \
+    "https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}.tar.gz.sig" \
     && gpg --keyserver pgp.surfnet.nl --recv-keys ${OVERLAY_KEY} \
     && gpg --verify /tmp/s6-overlay.tar.gz.sig /tmp/s6-overlay.tar.gz \
     && tar xzf /tmp/s6-overlay.tar.gz -C / \
