@@ -26,9 +26,9 @@ ARG OVERLAY_KEY
 ARG TARGETARCH
 
 RUN if [ "${TARGETARCH}" = "arm64" ]; then \
-        OVERLAY_ARCH="aarch64" \
+        OVERLAY_ARCH="aarch64"; \
     else \
-        OVERLAY_ARCH="${TARGETARCH}" \
+        OVERLAY_ARCH="${TARGETARCH}"; \
     fi
 
 ENV DEBUG="false" \
